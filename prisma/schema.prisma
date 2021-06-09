@@ -13,7 +13,7 @@ generator client {
 model users  {
   id                    Int             @default(autoincrement()) @id
   github_username       String          @db.VarChar(255)
-  repos_last_sync_date  Int             @db.UnsignedInt
+  repos_last_sync_date  DateTime        @db.DateTime()
   repositories          repositories[]
 }
 model repositories  {
