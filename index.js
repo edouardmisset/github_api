@@ -2,7 +2,7 @@ const axios = require("axios");
 // const connection = require('./db');
 const express = require("express");
 const app = express();
-const { getUsers, setRepo } = require('./connexion');
+const { getUsers, setRepo } = require("./connexion");
 require("dotenv").config();
 
 const port = process.env.PORT;
@@ -19,37 +19,28 @@ app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
 
-
-
-
-
-
-axios
-  .get("https://api.github.com/users/torvalds/repos", {
-    headers: {
-      Authorization: `token ${process.env.GIT_TOKEN_KEY}`,
-    },
-  })
-  .then((res) => {
-    const userRepos = res.data;
-    connection.query(
-      "INSERT INTO repositories (id, url, user_id) VALUES (?, ?, ?)",
-      [
+async function main() {
+  // get users
+  const userList = await getUsers();
+  // get repo info
+  userList.forEach(async (user) => {
+    try {
+      const response = await axios.get(
+        "https://api.github.com/" + user.github_username + "/repos",
         {
-          id: userRepos.id,
-          url: userRepos.html_url,
-          user_id: userRepos.owner.id,
-        },
-      ]
-    );
-  })
-  .then((res) => {
-    const id = res.insertId;
-    const newRepo = { id, url, user_id };
-    res.status(201).json(newRepo);
-  })
-  .catch((err) => {
-    console.error(err);
-    res.status(500).send("Error saving the user");
+          headers: {
+            Authorization: `token ${process.env.GIT_TOKEN_KEY}`,
+          },
+        }
+      );
+      const repoList = response.data;
+      // set repo info
+      const result = await setRepo(repoList);
+      console.log(`all repos for ${user.github_username} synced to db`);
+    } catch (error) {
+      console.error(error);
+    }
   });
-  console.log(`all repos for ${} synced to db`)
+}
+
+main();
