@@ -1,0 +1,1 @@
+  console.log(`all repos for ${} synced to db`)
