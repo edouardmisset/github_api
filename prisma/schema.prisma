@@ -2,10 +2,23 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
 generator client {
   provider = "prisma-client-js"
+}
+
+model users  {
+  id                    Int             @default(autoincrement()) @id
+  github_username       String          @db.VarChar(255)
+  repos_last_sync_date  Int             @db.UnsignedInt
+  repositories          repositories[]
+}
+model repositories  {
+  id        Int       @default(autoincrement()) @id
+  url       String    @db.VarChar(255)
+  user      users     @relation(fields: [user_id], references: [id])
+  user_id   Int
 }
