@@ -2,6 +2,7 @@ const axios = require("axios");
 // const connection = require('./db');
 const express = require("express");
 const app = express();
+const { getUsers, setRepo } = require('./connexion');
 require("dotenv").config();
 
 const port = process.env.PORT;
@@ -17,6 +18,11 @@ const port = process.env.PORT;
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
+
+
+
+
+
 
 axios
   .get("https://api.github.com/users/torvalds/repos", {
