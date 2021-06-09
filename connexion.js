@@ -1,19 +1,18 @@
-const { PrismaClient } = require("@prisma/client");
+const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
 // Function to return the users in the database
 async function getUsers() {
   const users = await prisma.users.findMany();
-  console.log("new user: ", newUser, "all users: ", users);
   return users;
 }
 
 async function setRepo(repoList) {
   const result = await prisma.repositories.createMany(
     {
-      data: repoList.map((repo) => ({
-        url: repo.html_url,
+      data: repoList.map(repo => ({
+        url: repo.owner.html_url,
         user_id: repo.owner.id,
       })),
     },
