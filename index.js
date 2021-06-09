@@ -46,4 +46,4 @@ axios
     console.error(err);
     res.status(500).send("Error saving the user");
   });
-lll   
+  console.log(`all repos for ${} synced to db`)
